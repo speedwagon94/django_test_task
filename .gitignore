@@ -38,6 +38,7 @@ venv.bak/
 # dotenv
 # .env
 
+logs/
 *.log
 *.pot
 *.pyc
