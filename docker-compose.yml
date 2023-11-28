@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: web_server
-    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0.8000 & wait"
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000 & wait"
     volumes:
       - .:/app
     ports:
