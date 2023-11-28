@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  # Сервис для Django приложения
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: web_server
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0.8000 & wait"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    restart: always
+
+  # Сервис для базы данных MySQL
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
+    container_name: DataBase
+    volumes:
+     - mysql_data:/var/lib/mysql-doc/data
+    ports:
+      - "3306:3306"
+    restart: always
+
+  # Сервис для Redis
+  redis:
+    image: "redis:alpine"
+    container_name: Redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+volumes:
+  mysql_data:
