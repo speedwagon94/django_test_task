@@ -5,9 +5,8 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile
     container_name: web_server
-    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000 & wait"
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app
     ports:
@@ -27,7 +26,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
     container_name: DataBase
     volumes:
-     - mysql_data:/var/lib/mysql-doc/data
+      - mysql_data:/var/lib/mysql-doc/data
     ports:
       - "3306:3306"
     restart: always
@@ -38,6 +37,18 @@ services:
     container_name: Redis
     ports:
       - "6379:6379"
+    restart: always
+
+  # Сервис для Celery
+  celery:
+    build:
+      context: .
+    container_name: celery_worker
+    command: celery -A django_test_task worker -l info
+    volumes:
+      - .:/app
+    depends_on:
+      - web
     restart: always
 
 volumes:
